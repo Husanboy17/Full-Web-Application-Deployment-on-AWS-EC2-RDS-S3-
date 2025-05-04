@@ -21,3 +21,12 @@ Set up the correct S3 bucket policy to make it public
 Launch a new EC2 instance (Ubuntu )
 
 The project folder name should also include your name (e.g., webapp_xusanboy).
+
+
+## 🧰 Tech Stack
+
+- Frontend: HTML, CSS, JavaScript (hosted on S3)
+- Backend: Python Flask (hosted on EC2)
+- Database: Amazon RDS PostgreSQL
+- Static Hosting: Amazon S3
+
