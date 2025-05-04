@@ -39,9 +39,3 @@ The following policy allows public access to the S3 bucket and its contents:
     ]
 }
 
-##**3. EC2 Deployment**
-
-- Launch a new EC2 instance (Ubuntu )
-
-- The project folder name should also include your name (e.g., webapp_xusanboy).
-
