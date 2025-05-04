@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 Xusanboy's Book API</title>
+    <link rel="stylesheet" href="styles_xusanboy.css">
+</head>
+<body>
+    <header>
+        <h1>📚 Xusanboy's Book API</h1>
+        <p>Welcome to the Xusanboy Library API. Manage your book collection below.</p>
+    </header>
+
+    <section>
+        <h2>Book Data</h2>
+        <div id="errorLog" style="color: red; margin-bottom: 10px;"></div>
+        <div class="controls">
+            <button onclick="showAddForm()">Add Book</button>
+            <label style="margin-left: 10px;">Delete Book by ID: <input type="number" id="deleteBid" placeholder="Enter Book ID" required></label>
+            <button onclick="deleteBook()">Delete</button>
+        </div>
+        <div id="addForm" style="display: none;">
+            <h3>Add New Book</h3>
+            <form id="bookForm">
+                <label>Title: <input type="text" id="title" required></label><br>
+                <label>Author: <input type="text" id="author" required></label><br>
+                <label>Category: <input type="text" id="category" required></label><br>
+                <label>Status: <input type="text" id="status" required></label><br>
+                <button type="button" onclick="addBook()">Submit</button>
+                <button type="button" onclick="hideAddForm()">Cancel</button>
+            </form>
+        </div>
+        <table id="bookTable">
+            <thead>
+                <tr>
+                    <th>Book ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="5">Loading data...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        <p>Powered by Xusanboy | API Documentation</p>
+    </footer>
+
+    <script>
+        // Log messages to both console and page
+        function logMessage(message, isError = false) {
+            console.log(message);
+            const logDiv = document.getElementById('errorLog');
+            logDiv.innerHTML += `<p style="color: ${isError ? 'red' : 'black'}">${message}</p>`;
+        }
+
+        // Clear error log
+        function clearLog() {
+            document.getElementById('errorLog').innerHTML = '';
+        }
+
+        // Fetch and display book data
+        async function fetchBookData() {
+            logMessage('Attempting to fetch data from http://13.209.50.20:8000/data');
+            try {
+                const response = await fetch('http://13.209.50.20:8000/data', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors'
+                });
+                logMessage(`Response status: ${response.status}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                logMessage(`Received ${data.length} book records`);
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = '';
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5">No book data available.</td></tr>';
+                    logMessage('No data returned from server');
+                } else {
+                    data.forEach(book => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${book.bid}</td>
+                            <td>${book.title}</td>
+                            <td>${book.author}</td>
+                            <td>${book.category}</td>
+                            <td>${book.status}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                    logMessage('Table updated successfully');
+                }
+                clearLog();
+            } catch (error) {
+                logMessage(`Error fetching book data: ${error.message}`, true);
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="5">Failed to load data. See error log above.</td></tr>';
+            }
+        }
+
+        // Show/hide add book form
+        function showAddForm() {
+            document.getElementById('addForm').style.display = 'block';
+        }
+
+        function hideAddForm() {
+            document.getElementById('addForm').style.display = 'none';
+            document.getElementById('bookForm').reset();
+        }
+
+        // Add a new book
+        async function addBook() {
+            const newBook = {
+                title: document.getElementById('title').value,
+                author: document.getElementById('author').value,
+                category: document.getElementById('category').value,
+                status: document.getElementById('status').value
+            };
+            logMessage('Attempting to add new book');
+            try {
+                const response = await fetch('http://13.209.50.20:8000/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newBook),
+                    mode: 'cors'
+                });
+                const result = await response.json();
+                if (result.status === 'Data inserted successfully') {
+                    logMessage('Book added successfully');
+                    hideAddForm();
+                    fetchBookData();
+                } else {
+                    logMessage(`Error adding book: ${result.error}`, true);
+                }
+            } catch (error) {
+                logMessage(`Error adding book: ${error.message}`, true);
+            }
+        }
+
+        // Delete a book
+        async function deleteBook() {
+            const bid = document.getElementById('deleteBid').value;
+            if (!bid) {
+                logMessage('Please enter a Book ID to delete', true);
+                return;
+            }
+            logMessage(`Attempting to delete book ID ${bid}`);
+            try {
+                const response = await fetch('http://13.209.50.20:8000/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bid: parseInt(bid) }),
+                    mode: 'cors'
+                });
+                const result = await response.json();
+                if (result.status === 'Data deleted successfully') {
+                    logMessage('Book deleted successfully');
+                    document.getElementById('deleteBid').value = '';
+                    fetchBookData();
+                } else {
+                    logMessage(`Error deleting book: ${result.error}`, true);
+                }
+            } catch (error) {
+                logMessage(`Error deleting book: ${error.message}`, true);
+            }
+        }
+
+        // Load data on page load
+        window.onload = fetchBookData;
+    </script>
+</body>
+</html>
