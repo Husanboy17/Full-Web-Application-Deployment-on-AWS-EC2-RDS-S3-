@@ -1,2 +1,6 @@
-**1 Database setup. 
-2 Installing dataset from Kaggle https://www.kaggle.com/datasets and importing it to the database in Debeaver
+**1 Database setup**
+
+''' bash Installing dataset from Kaggle https://www.kaggle.com/datasets
+
+Importing CSV file to the database in Debeaver
+'''
