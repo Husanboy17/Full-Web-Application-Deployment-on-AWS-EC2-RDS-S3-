@@ -8,6 +8,7 @@
 
 - Importing CSV file to the database in Debeaver
 
+  
 ##**2. S3 Static Hosting**
 
 - Create an S3 bucket for static website hosting
