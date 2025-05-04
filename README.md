@@ -1,32 +1,47 @@
-**1. Database setup**
+##**1. Database setup**
 
-Installing dataset from Kaggle https://www.kaggle.com/datasets
+- Installing dataset from Kaggle https://www.kaggle.com/datasets
 
-Launching database in RDS and connecting it with Debeaver
+- Launching database in RDS and connecting it with Debeaver
 
-Creating table named tbl_<your_first_name>_<dataset_name>
+- Creating table named tbl_<your_first_name>_<dataset_name>
 
-Importing CSV file to the database in Debeaver
+- Importing CSV file to the database in Debeaver
 
-**2. S3 Static Hosting**
+##**2. S3 Static Hosting**
 
-Create an S3 bucket for static website hosting
+- Create an S3 bucket for static website hosting
 
-Uploading HTML and file should be named: index_<your_first_name>.html
+- Uploading HTML and file should be named: index_<your_first_name>.html
 
-Set up the correct S3 bucket policy to make it public
+- Set up the correct S3 bucket policy to make it public
 
-**3. EC2 Deployment**
+  ## 📁 S3 Bucket Policy
 
-Launch a new EC2 instance (Ubuntu )
+The following policy allows public access to the S3 bucket and its contents:
 
-The project folder name should also include your name (e.g., webapp_xusanboy).
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:ListBucket",
+            "Resource": "arn:aws:s3:::professor-s-bucket"
+        },
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::professor-s-bucket/*"
+        }
+    ]
+}
 
+##**3. EC2 Deployment**
 
-## 🧰 Tech Stack
+- Launch a new EC2 instance (Ubuntu )
 
-- Frontend: HTML, CSS, JavaScript (hosted on S3)
-- Backend: Python Flask (hosted on EC2)
-- Database: Amazon RDS PostgreSQL
-- Static Hosting: Amazon S3
+- The project folder name should also include your name (e.g., webapp_xusanboy).
 
