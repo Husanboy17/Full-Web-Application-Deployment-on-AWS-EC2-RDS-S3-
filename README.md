@@ -5,4 +5,4 @@
 
 
 
-2 Installing dataset from Kaggle https://www.kaggle.com/datasets
+2 Installing dataset from Kaggle https://www.kaggle.com/datasets and importing it to the database in Debeaver
